@@ -5,6 +5,7 @@ import AuthorLayout from '@/components/AuthorLayout.vue'
 const backendRoutes = [
   {
     path: '/back',
+    redirect: '/back/dataanalysis',
     component: BackendLayout,
     children: [{
       path: 'dataanalysis',
@@ -68,4 +69,22 @@ const router = createRouter({
   routes: backendRoutes
 })
 
-export default router
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    const userInfo = localStorage.getItem('userInfo')
+      if(userInfo.usertype===2){
+        if(to.path.startsWith('/back')){
+          next()
+        }else{
+          next('/back/dataanalysis')
+        }
+      }
+  } else {
+    if(to.path.startsWith('/back')){
+      next('/author/login')
+    }else{
+      next('/author/login')
+    }
+  }
+})

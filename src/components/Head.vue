@@ -2,6 +2,9 @@
 import { Expand } from '@element-plus/icons-vue';
 import { useAdminStore } from '@/stores/admin';
 import { useTitleStore } from '@/stores/admin'
+import { ElMessageBox } from 'element-plus'
+import { logout } from '@/api/admin'
+import router from '@/router'
 
 const titleStore = useTitleStore()
 
@@ -12,8 +15,21 @@ const changeCollapse = () => {
 const handleCommand = (command) => {
     if (command === 'out') {
         // 退出登录
-    }
-}
+        ElMessageBox.confirm('确定退出登录吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            // 清除本地存储中的用户信息
+            logout().then(() => {
+                localStorage.removeItem('token')
+                localStorage.removeItem('userInfo')
+                // 跳转到登录页
+                router.push('/author/login')
+            })
+            
+    })
+}}
 
 </script>
 
