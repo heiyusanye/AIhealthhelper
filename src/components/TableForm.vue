@@ -1,6 +1,6 @@
 <template>
     <el-form ref="ruleFormRef" :model="formData">
-        <el-row :gutter="24">
+        <el-row :gutter="20">
             <template v-for="item in formItemWithCol" :key="item.prop"> 
                 <el-col v-bind="item.col">
                     <el-form-item :label="item.label" :prop="item.prop">

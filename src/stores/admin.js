@@ -13,7 +13,7 @@ export const useAdminStore = defineStore('admin',() =>{
 })
 
 export const useTitleStore = defineStore('title',() =>{
-    const title = ref('健康助手')
+    const title = ref('数据分析')
     const setTitle = (newTitle) => {
         title.value = newTitle
     }

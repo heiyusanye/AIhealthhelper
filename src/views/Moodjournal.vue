@@ -58,18 +58,18 @@
                                 '-' }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="睡眠质量">{{ currentDetail.sleepQuality || '-'
-                            }}/5</el-descriptions-item>
+                        }}/5</el-descriptions-item>
                         <el-descriptions-item label="压力水平">{{ currentDetail.stressLevel || '-'
-                            }}/5</el-descriptions-item>
+                        }}/5</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
                     <h4>日记内容</h4>
                     <el-descriptions :column="1" border>
                         <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                         <el-descriptions-item label="日记内容">{{ currentDetail.diaryContent || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
@@ -78,7 +78,7 @@
                         <el-descriptions :column="2" border>
                             <el-descriptions-item label="主要情绪">
                                 <el-tag :type="getEmotionTagType(aiData.primaryEmotion)">{{ aiData.primaryEmotion
-                                    }}</el-tag>
+                                }}</el-tag>
                             </el-descriptions-item>
                             <el-descriptions-item label="情绪强度">
                                 <el-progress :percentage="aiData.emotionScore"
@@ -118,9 +118,9 @@
                     <h4>时间信息</h4>
                     <el-descriptions :column="2" border>
                         <el-descriptions-item label="创建时间">{{ currentDetail.createdAt || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                         <el-descriptions-item label="更新时间">{{ currentDetail.updatedAt || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     </el-descriptions>
                 </div>
             </div>
@@ -164,34 +164,55 @@ const pagination = reactive({
 })
 
 const handleSearch = async (formData) => {
-    console.log(formData);
-    
+    console.log('搜索参数:', formData, pagination);
+
     const params = {
-        ...formData,
         ...pagination,
     }
-    const { total, records } = await getMoodJournalPage(params)
-    pagination.total = total
-    tableData.value = records
+
+    // 处理用户ID筛选
+    if (formData.userId) {
+        params.userId = formData.userId
+    }
+
+    // 处理情绪评分范围筛选
+    if (formData.moodScore) {
+        const range = formData.moodScore.split('-').map(Number)
+        if (range.length === 2) {
+            params.minMoodScore = range[0]
+            params.maxMoodScore = range[1]
+        }
+    }
+
+    console.log('最终请求参数:', params);
+
+    try {
+        const response = await getMoodJournalPage(params)
+        console.log('后端返回数据:', response);
+
+        if (response && response.records) {
+            pagination.total = response.total || 0
+            tableData.value = response.records
+            console.log('表格数据:', tableData.value);
+        } else {
+            console.error('后端返回数据结构不正确:', response);
+            pagination.total = 0
+            tableData.value = []
+        }
+    } catch (error) {
+        console.error('获取数据失败:', error);
+        pagination.total = 0
+        tableData.value = []
+    }
 }
+
 onMounted(() => {
     handleSearch({})
 })
 
-const tableData = ref([
-    {
-        userId: '1',
-        moodScore: '1-3',
-        moodJournal: '用户1在2023-08-01 10:00:00记录了低分（1-3分）'
-    },
-    {
-        userId: '2',
-        moodScore: '4-6',
-        moodJournal: '用户2在2023-08-01 11:00:00记录了中分（4-6分）'
-    }
-])
+const tableData = ref([{}])
 const handleChange = (page) => {
-    pagination.currentPage = page
+    pagination.current = page
     handleSearch({})
 }
 const handleSizeChange = (size) => {

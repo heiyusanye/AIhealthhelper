@@ -1,7 +1,9 @@
 import service from '@/utils/request'
+// 登录
 export function login(data){
     return service.post('/user/login',data)
 }
+// 获取知识分类树
 export function categoryTree(){
     return service.get('/knowledge/category/tree')
 }
@@ -41,10 +43,14 @@ export function getConsultationRecordPage(params){
 export function getConsultationRecordDetail(sessionId){
     return service.get(`/psychological-chat/sessions/${sessionId}/messages`)
 }
-
+// 获取用户心情日记分页列表
 export function getMoodJournalPage(params){
     return service.get('/emotion-diary/admin/page',{params})
 }
 export function deleteMoodJournal(id){
     return service.delete(`/emotion-diary/admin/${id}`)
+}
+//获取综合数据分析
+export function getAnalysisOverview(){
+    return service.get('/data-analytics/overview')
 }

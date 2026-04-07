@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BackendLayout from '@/components/BackendLayout.vue'
 import AuthorLayout from '@/components/AuthorLayout.vue'
-import { HomeFilled } from '@element-plus/icons-vue'
 
 const backendRoutes = [
   {
@@ -9,7 +8,7 @@ const backendRoutes = [
     component: BackendLayout,
     children: [{
       path: 'dataanalysis',
-      component: () => import('@/views/DataAnalysis.vue'),
+      component: () => import('@/views/Dataanalysis.vue'),
       meta: {
         title: '数据分析',
         icon: 'PieChart'
