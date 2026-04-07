@@ -12,7 +12,7 @@
             <el-table-column prop="diaryDate" label="记录日期" width="120"></el-table-column>
             <el-table-column label="情绪评分">
                 <template #default="scope">
-                    <el-rate :model-value="scope.row.moodScore" :max="10" disabled></el-rate>
+                    <el-rate :model-value="getRateValue(scope.row.moodScore)" :max="10" disabled></el-rate>
                 </template>
             </el-table-column>
             <el-table-column label="生活指标" width="120">
@@ -27,8 +27,8 @@
             <el-table-column prop="diaryContent" label="日记内容" width="250"></el-table-column>
             <el-table-column label="操作" width="250" fixed="right">
                 <template #default="scope">
-                    <el-button @click="viewSessionDetail(scope.row)" text type="primary" size="mini">编辑</el-button>
-                    <el-button @click="handleDelete(scope.row)" text type="danger" size="mini">删除</el-button>
+                    <el-button @click="viewSessionDetail(scope.row)" text type="primary">编辑</el-button>
+                    <el-button @click="handleDelete(scope.row)" text type="danger">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -50,7 +50,7 @@
                     <h4>情绪状态</h4>
                     <el-descriptions :column="2" border>
                         <el-descriptions-item label="情绪评分">
-                            <el-rate :model-value="currentDetail.moodScore" :max="10" disabled></el-rate>
+                            <el-rate :model-value="getRateValue(currentDetail.moodScore)" :max="10" disabled></el-rate>
                         </el-descriptions-item>
                         <el-descriptions-item label="主要情绪">
                             <el-tag :type="getEmotionTagType(currentDetail.dominantEmotion)">{{
@@ -58,18 +58,18 @@
                                 '-' }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="睡眠质量">{{ currentDetail.sleepQuality || '-'
-                        }}/5</el-descriptions-item>
+                            }}/5</el-descriptions-item>
                         <el-descriptions-item label="压力水平">{{ currentDetail.stressLevel || '-'
-                        }}/5</el-descriptions-item>
+                            }}/5</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
                     <h4>日记内容</h4>
                     <el-descriptions :column="1" border>
                         <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '-'
-                        }}</el-descriptions-item>
+                            }}</el-descriptions-item>
                         <el-descriptions-item label="日记内容">{{ currentDetail.diaryContent || '-'
-                        }}</el-descriptions-item>
+                            }}</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
@@ -78,7 +78,7 @@
                         <el-descriptions :column="2" border>
                             <el-descriptions-item label="主要情绪">
                                 <el-tag :type="getEmotionTagType(aiData.primaryEmotion)">{{ aiData.primaryEmotion
-                                }}</el-tag>
+                                    }}</el-tag>
                             </el-descriptions-item>
                             <el-descriptions-item label="情绪强度">
                                 <el-progress :percentage="aiData.emotionScore"
@@ -118,9 +118,9 @@
                     <h4>时间信息</h4>
                     <el-descriptions :column="2" border>
                         <el-descriptions-item label="创建时间">{{ currentDetail.createdAt || '-'
-                        }}</el-descriptions-item>
+                            }}</el-descriptions-item>
                         <el-descriptions-item label="更新时间">{{ currentDetail.updatedAt || '-'
-                        }}</el-descriptions-item>
+                            }}</el-descriptions-item>
                     </el-descriptions>
                 </div>
             </div>
@@ -136,7 +136,7 @@ import { getMoodJournalPage } from '@/api/admin';
 import TableForm from '@/components/TableForm.vue';
 import { ref, reactive } from 'vue'
 import { onMounted } from 'vue'
-import {ElMessage ,ElMessageBox} from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { deleteMoodJournal } from '@/api/admin'
 
 const formItem = [{
@@ -162,10 +162,13 @@ const pagination = reactive({
     size: 10,
     total: 0
 })
+
 const handleSearch = async (formData) => {
+    console.log(formData);
+    
     const params = {
         ...formData,
-        ...pagination
+        ...pagination,
     }
     const { total, records } = await getMoodJournalPage(params)
     pagination.total = total
@@ -263,6 +266,20 @@ const getRiskLevelText = (riskLevel) => {
     }
     return riskTextMap[riskLevel] || '未知风险等级'
 }
+
+const getRateValue = (moodScore) => {
+    if (typeof moodScore === 'number') {
+        return moodScore
+    }
+    if (typeof moodScore === 'string') {
+        if (moodScore.includes('-')) {
+            const [min, max] = moodScore.split('-').map(Number)
+            return Math.round((min + max) / 2)
+        }
+        return Number(moodScore) || 0
+    }
+    return 0
+}
 const handleDelete = async (row) => {
     ElMessageBox.confirm('确认删除吗？', '删除确认', {
         confirmButtonText: '确定',
@@ -270,7 +287,7 @@ const handleDelete = async (row) => {
         type: 'warning'
     }).then(async () => {
         await deleteMoodJournal(row.id).then(() => {
-            ElMessage.success('删除成功')       
+            ElMessage.success('删除成功')
             handleSearch({})
         })
     }).catch(() => {

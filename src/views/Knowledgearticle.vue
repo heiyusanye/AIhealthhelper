@@ -50,7 +50,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import PageHead from '@/components/PageHead.vue';
 import TableForm from '@/components/TableForm.vue';
-import { categoryTree, articlePage, createArticle, getArticleDetail, deleteArticle } from '@/api/admin';
+import { categoryTree, articlePage, getArticleDetail, deleteArticle } from '@/api/admin';
 import ArtcileDialog from '@/components/ArtcileDialog.vue';
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { changeArticleStatus } from '@/api/admin.js'
