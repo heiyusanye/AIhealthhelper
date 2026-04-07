@@ -23,12 +23,12 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="emotionTriggers" label="情绪触发因素" width="120"></el-table-column>
+            <el-table-column prop="emotionTriggers" label="情绪触发因素" width="150"></el-table-column>
             <el-table-column prop="diaryContent" label="日记内容" width="250"></el-table-column>
             <el-table-column label="操作" width="250" fixed="right">
                 <template #default="scope">
                     <el-button @click="viewSessionDetail(scope.row)" text type="primary" size="mini">编辑</el-button>
-                    <el-button text type="danger" size="mini">删除</el-button>
+                    <el-button @click="handleDelete(scope.row)" text type="danger" size="mini">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -58,18 +58,18 @@
                                 '-' }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="睡眠质量">{{ currentDetail.sleepQuality || '-'
-                            }}/5</el-descriptions-item>
+                        }}/5</el-descriptions-item>
                         <el-descriptions-item label="压力水平">{{ currentDetail.stressLevel || '-'
-                            }}/5</el-descriptions-item>
+                        }}/5</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
                     <h4>日记内容</h4>
                     <el-descriptions :column="1" border>
                         <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                         <el-descriptions-item label="日记内容">{{ currentDetail.diaryContent || '-'
-                            }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     </el-descriptions>
                 </div>
                 <div class="detail-section">
@@ -78,7 +78,7 @@
                         <el-descriptions :column="2" border>
                             <el-descriptions-item label="主要情绪">
                                 <el-tag :type="getEmotionTagType(aiData.primaryEmotion)">{{ aiData.primaryEmotion
-                                    }}</el-tag>
+                                }}</el-tag>
                             </el-descriptions-item>
                             <el-descriptions-item label="情绪强度">
                                 <el-progress :percentage="aiData.emotionScore"
@@ -114,7 +114,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="detail-section">
+                    <h4>时间信息</h4>
+                    <el-descriptions :column="2" border>
+                        <el-descriptions-item label="创建时间">{{ currentDetail.createdAt || '-'
+                        }}</el-descriptions-item>
+                        <el-descriptions-item label="更新时间">{{ currentDetail.updatedAt || '-'
+                        }}</el-descriptions-item>
+                    </el-descriptions>
+                </div>
             </div>
+            <template #footer>
+                <el-button type="primary" @click="detailDialogVisible = false">关闭</el-button>
+            </template>
         </el-dialog>
     </div>
 </template>
@@ -124,6 +136,8 @@ import { getMoodJournalPage } from '@/api/admin';
 import TableForm from '@/components/TableForm.vue';
 import { ref, reactive } from 'vue'
 import { onMounted } from 'vue'
+import {ElMessage ,ElMessageBox} from 'element-plus'
+import { deleteMoodJournal } from '@/api/admin'
 
 const formItem = [{
     type: 'input',
@@ -248,6 +262,20 @@ const getRiskLevelText = (riskLevel) => {
         3: '危机'
     }
     return riskTextMap[riskLevel] || '未知风险等级'
+}
+const handleDelete = async (row) => {
+    ElMessageBox.confirm('确认删除吗？', '删除确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(async () => {
+        await deleteMoodJournal(row.id).then(() => {
+            ElMessage.success('删除成功')       
+            handleSearch({})
+        })
+    }).catch(() => {
+        ElMessage.info('已取消删除')
+    })
 }
 
 

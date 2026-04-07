@@ -45,3 +45,6 @@ export function getConsultationRecordDetail(sessionId){
 export function getMoodJournalPage(params){
     return service.get('/emotion-diary/admin/page',{params})
 }
+export function deleteMoodJournal(id){
+    return service.delete(`/emotion-diary/admin/${id}`)
+}
