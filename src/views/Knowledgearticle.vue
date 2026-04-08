@@ -33,9 +33,10 @@
             <el-table-column label="操作" width="240" fixed="right">
                 <template #default="scope">
                     <el-button text type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button text @click="handlePublish(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 2"
-                        type="success">发布</el-button>
-                    <el-button text @click="handleOffline(scope.row)" v-if="scope.row.status === 1" type="danger">下线</el-button>
+                    <el-button text @click="handlePublish(scope.row)"
+                        v-if="scope.row.status === 0 || scope.row.status === 2" type="success">发布</el-button>
+                    <el-button text @click="handleOffline(scope.row)" v-if="scope.row.status === 1"
+                        type="danger">下线</el-button>
                     <el-button text @click="handleDelete(scope.row)" type="danger">删除</el-button>
                 </template>
             </el-table-column>
@@ -43,7 +44,8 @@
         <el-pagination layout="total, sizes, prev, pager, next, jumper" :total="pagination.total"
             :page-size="pagination.size" @change="handleChange" @size-change="handleSizeChange"
             style="margin-top: 25px;" />
-        <ArtcileDialog v-model="dialogVisible" :categoryList="categoryList" @success="handleSuccess" :currentArticle="currentArticle" />
+        <ArtcileDialog v-model="dialogVisible" :categoryList="categoryList" @success="handleSuccess"
+            :currentArticle="currentArticle" />
     </div>
 </template>
 <script setup>
@@ -135,7 +137,7 @@ const handleSuccess = () => {
 }
 const currentArticle = ref({})
 const handleEdit = (row) => {
-    if (!row.id){
+    if (!row.id) {
         currentArticle.value = {}
         dialogVisible.value = true
         return
@@ -151,8 +153,8 @@ const handlePublish = (row) => {
         cancelButtonText: '取消',
         type: 'info'
     }).then(() => {
-        changeArticleStatus(row.id, {status: 1 }).then(res => {
-            if (res.code === 200){
+        changeArticleStatus(row.id, { status: 1 }).then(res => {
+            if (res.code === '200') {
                 ElMessage.success('发布成功')
                 handleSearch({})
             }
@@ -165,8 +167,8 @@ const handleOffline = (row) => {
         cancelButtonText: '取消',
         type: 'info'
     }).then(() => {
-        changeArticleStatus(row.id, {status: 2 }).then(res => {
-            if (res.code === 200){
+        changeArticleStatus(row.id, { status: 2 }).then(res => {
+            if (res.code === '200') {
                 ElMessage.success('下线成功')
                 handleSearch({})
             }
@@ -180,7 +182,7 @@ const handleDelete = (row) => {
         type: 'danger'
     }).then(() => {
         deleteArticle(row.id).then(res => {
-            if (res.code === 200){
+            if (res.code === '200') {
                 ElMessage.success('删除成功')
                 handleSearch({})
             }

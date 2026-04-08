@@ -58,4 +58,4 @@ export function getAnalysisOverview(){
 //退出登录
 export function logout(){
     return service.post('/user/logout')
-}
+}  

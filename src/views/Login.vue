@@ -68,7 +68,7 @@ const submitForm = async (formEl) => {
                 if (data.userInfo.userType === 2) {
                     router.push('/back/dataanalysis')
                 } else {
-                    router.push('/user/index')
+                    router.push('/')
                 }
             })
         }

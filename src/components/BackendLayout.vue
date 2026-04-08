@@ -37,7 +37,7 @@ import Aside from '@/components/Aside.vue'
             overflow: auto;
             padding: 20px;
             background: white;
-            height: calc(100% - 74px);
+            height: calc(100%  - 74px);
         }
     }
 }

@@ -26,8 +26,7 @@ const handleCommand = (command) => {
                 localStorage.removeItem('userInfo')
                 // 跳转到登录页
                 router.push('/author/login')
-            })
-            
+            })     
     })
 }}
 

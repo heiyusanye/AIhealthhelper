@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BackendLayout from '@/components/BackendLayout.vue'
 import AuthorLayout from '@/components/AuthorLayout.vue'
+import FrontendLayout from '@/components/FrontendLayout.vue'
+
 
 const backendRoutes = [
   {
@@ -30,7 +32,7 @@ const backendRoutes = [
         title: '咨询记录',
         icon: 'Message'
       }
-    },{
+    }, {
       path: 'moodjournal',
       component: () => import('@/views/Moodjournal.vue'),
       meta: {
@@ -39,17 +41,17 @@ const backendRoutes = [
       }
     }
     ]
-  }, 
+  },
   {
-    path:'/author',
-    component:AuthorLayout,
+    path: '/author',
+    component: AuthorLayout,
     children: [
       {
         path: 'login',
         component: () => import('@/views/Login.vue'),
         meta: {
           title: '登录',
-          // icon: 'Login'
+          icon: 'Login'
         },
       },
       {
@@ -57,34 +59,61 @@ const backendRoutes = [
         component: () => import('@/views/Register.vue'),
         meta: {
           title: '注册',
-          // icon: 'Register'
+          icon: 'Register'
         },
       }
     ]
   }
 ]
 
+const frontendRoutes = [
+  {
+    path: '/',
+    component: FrontendLayout,
+    children: [{
+      path: '',
+      component: () => import('@/views/Home.vue')
+    }, {
+      path: 'consultation',
+      component: () => import('@/views/Consultation.vue')
+    }, {
+      path: 'emotiondiary',
+      component: () => import('@/views/EmotionDiary.vue')
+    }, {
+      path: 'knowledge',
+      component: () => import('@/views/Knowledge.vue')
+    }
+    ]
+  }
+]
+
 const router = createRouter({
   history: createWebHistory(),
-  routes: backendRoutes
+  routes: [...backendRoutes, ...frontendRoutes]
 })
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (token) {
-    const userInfo = localStorage.getItem('userInfo')
-      if(userInfo.usertype===2){
-        if(to.path.startsWith('/back')){
-          next()
-        }else{
-          next('/back/dataanalysis')
-        }
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (userInfo.userType == 2) {
+      if (to.path.startsWith('/back')) {
+        next()
+      } else {
+        next('/back/dataanalysis')
       }
+    }
+    else if (userInfo.userType == 1) {
+
+    }
   } else {
-    if(to.path.startsWith('/back')){
+    if (to.path.startsWith('/back')) {
       next('/author/login')
-    }else{
-      next('/author/login')
+    } else {
+      next()
     }
   }
 })
+
+
+export default router
