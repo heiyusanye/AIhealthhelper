@@ -69,15 +69,16 @@ const backendRoutes = [
 const frontendRoutes = [
   {
     path: '/',
+    redirect: '/home',
     component: FrontendLayout,
     children: [{
-      path: '',
+      path: 'home',
       component: () => import('@/views/Home.vue')
     }, {
       path: 'consultation',
       component: () => import('@/views/Consultation.vue')
     }, {
-      path: 'emotiondiary',
+      path: 'emotion-diary',
       component: () => import('@/views/EmotionDiary.vue')
     }, {
       path: 'knowledge',
@@ -92,28 +93,33 @@ const router = createRouter({
   routes: [...backendRoutes, ...frontendRoutes]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const token = localStorage.getItem('token')
+
   if (token) {
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-    if (userInfo.userType == 2) {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+
+    // 管理员
+    if (userInfo.userType === 2) {
       if (to.path.startsWith('/back')) {
-        next()
-      } else {
-        next('/back/dataanalysis')
+        return true
+      }else{
+        return '/back/dataanalysis'
       }
     }
-    else if (userInfo.userType == 1) {
-
+    // 普通用户
+    if (userInfo.userType === 1) {
+      if (to.path.startsWith('/home')||to.path.startsWith('/consultation')||to.path.startsWith('/emotion-diary')||to.path.startsWith('/knowledge')) {
+        return true
+      }
+      else{
+        return '/home'
+      }
     }
-  } else {
-    if (to.path.startsWith('/back')) {
-      next('/author/login')
-    } else {
-      next()
-    }
+    return true // 放行
   }
+  // 未登录
+  return true
 })
-
 
 export default router

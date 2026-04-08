@@ -25,7 +25,7 @@
             </el-form>
         </div>
         <div class="footer">
-            <p>还没有账户？<router-link to="/author/register">去注册</router-link></p>
+            <p>还没有账户？<a style="color: #409eff; cursor: pointer;" @click="toRegister">去注册</a></p>
         </div>
     </div>
 </template>
@@ -35,6 +35,10 @@ import { ref, reactive } from 'vue'
 import { login } from '@/api/admin'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+
+const toRegister = () => {
+    router.push('/author/register')
+}
 
 const formData = reactive({
     username: '',
@@ -67,8 +71,8 @@ const submitForm = async (formEl) => {
                 //根据用户角色跳转不同的页面
                 if (data.userInfo.userType === 2) {
                     router.push('/back/dataanalysis')
-                } else {
-                    router.push('/')
+                } else if (data.userInfo.userType === 1) {
+                    router.push('/home')
                 }
             })
         }

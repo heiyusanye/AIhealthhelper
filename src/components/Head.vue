@@ -44,7 +44,7 @@ const handleCommand = (command) => {
                     <div class="flexbox">
                         <el-avatar
                             src="https://cube.elemecdn.com/0/88/c530d2554b4394c400021336853c48.png?wh=40x40"></el-avatar>
-                        <p class="username">用户</p>
+                        <p class="username">系统管理员</p>
                         <el-icon class="el-icon--right"><arrow-down /></el-icon>
                     </div>
                 </span>

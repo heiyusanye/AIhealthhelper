@@ -4,7 +4,6 @@
             <Aside />
             <el-container>
                 <el-header>
-
                     <Head />
                 </el-header>
                 <el-main class="main-content">
@@ -37,7 +36,7 @@ import Aside from '@/components/Aside.vue'
             overflow: auto;
             padding: 20px;
             background: white;
-            height: calc(100%  - 74px);
+            height: calc(100% - 74px);
         }
     }
 }
