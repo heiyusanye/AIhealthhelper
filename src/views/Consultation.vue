@@ -12,6 +12,57 @@
                     <span>在线服务中</span>
                 </div>
             </div>
+            <!-- 情绪花园 -->
+            <div class="emotion-garden">
+                <div class="garden-header">
+                    <div class="garden-title">情绪花园</div>
+                </div>
+                <div class="emotion-info">
+                    <div class="emotion-name">{{ currentEmotion.label }}</div>
+                    <div class="emotion-score">{{ currentEmotion.emotionScore }}</div>
+                </div>
+                <div class="warm-tips">
+                    <div class="emotion-status-text">
+                        <span class="status-label">今天感觉：</span>
+                        <span class="status-emotion">{{ currentEmotion.isNegative ? '需要关注' : '很不错' }}</span>
+                    </div>
+                    <div class="emotion-intensity">
+                        <span class="intensity-dots">
+                            <span v-for="dot in 3" :key="dot" class="dot"
+                                :class="{ 'active': getIntensityClass(currentEmotion.emotionScore) >= dot }"></span>
+                        </span>
+                        <span class="intensity-text">{{ getRiskText(currentEmotion.riskLevel) }}</span>
+                    </div>
+                    <div class="warm-suggestion" v-if="currentEmotion.suggestion">
+                        <div class="suggestion-icon">💝</div>
+                        <div class="suggestion-content">
+                            <div class="suggestion-title">给你的小建议</div>
+                            <div class="suggestion-text">
+                                {{ currentEmotion.suggestion }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="healing-actions" v-if="currentEmotion.improvementSuggestions.length > 0">
+                        <div class="actions-title">治愈小行动</div>
+                        <div class="actions-list">
+                            <div class="action-item" v-for="action in currentEmotion.improvementSuggestions"
+                                :key="action">
+                                <div class="action-icon">✨</div>
+                                <div class="action-text">{{ action }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="risk-notice" v-if="currentEmotion.isNegative && currentEmotion.riskLevel > 1">
+                        <div class="notice-icon">⚠️</div>
+                        <div class="notice-content">
+                            <div class="notice-title">温馨提示</div>
+                            <div class="notice-text">
+                                {{ currentEmotion.riskDescription }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- 会话列表 -->
             <div class="session-history">
                 <h4 class="session-title">会话列表</h4>
@@ -30,7 +81,7 @@
                                         <el-icon>
                                             <ChatRound />
                                         </el-icon>
-                                        {{ session.messagesCount || 0 }}
+                                        {{ session.messageCount || 0 }}
                                     </span>
                                     <span>
                                         <el-icon>
@@ -129,7 +180,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { startSession, deleteSession, getSessionList, getSessionDetail } from '@/api/frontend'
+import { startSession, deleteSession, getSessionList, getSessionDetail, getEmotionSession } from '@/api/frontend'
 import { ElMessage } from 'element-plus'
 import { ChatRound, DeleteFilled } from '@element-plus/icons-vue'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
@@ -148,12 +199,39 @@ const createNewSession = () => {
     }
     currentSession.value = newSession
     getSessionPage()
+    // 重置情绪状态为默认值
+    currentEmotion.value = {
+        primaryEmotion: '中性',
+        emotionScore: 50,
+        isNegative: false,
+        riskLevel: 0,
+        suggestion: '情绪状态平稳',
+        improvementSuggestions: [],
+        label: '中性'
+    }
+    messages.value = []
 }
 const currentSession = ref(null)
 const sessionList = ref([])
 const messages = ref([])
 const userMessage = ref('')
 const isAiTyping = ref(false)
+const currentEmotion = ref({
+    primaryEmotion: '中性',
+    emotionScore: 50,
+    isNegative: false,
+    riskLevel: 0,
+    suggestion: '情绪状态平稳',
+    improvementSuggestions: [],
+    label: '中性'
+})
+const loadSessionEmotion = (sessionId) => {
+    const id = sessionId.toString().startsWith('session_') ? sessionId : `session_${sessionId}`
+    getEmotionSession(id).then(res => {
+        console.log(res)
+        currentEmotion.value = res
+    })
+}
 const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         sendMessage()
@@ -216,6 +294,8 @@ const startNewSession = (message) => {
         })
 
         startAIResponse(currentSession.value.sessionId, message)
+        // 调用 getEmotionSession 更新情绪花园
+        loadSessionEmotion(currentSession.value.sessionId)
     })
 }
 const startAIResponse = (sessionId, userMessage) => {
@@ -257,6 +337,7 @@ const startAIResponse = (sessionId, userMessage) => {
             if (eventName === 'done') {
                 isAiTyping.value = false
                 ctrl.abort()
+                loadSessionEmotion(currentSession.value.sessionId)
                 return
             }
             const payload = JSON.parse(raw)
@@ -274,7 +355,7 @@ const startAIResponse = (sessionId, userMessage) => {
         },
         onClose: () => {
             //开始情绪分析
-            isAiTyping.value = false
+            loadSessionEmotion(currentSession.value.sessionId)
         }
     })
 }
@@ -299,6 +380,7 @@ const handleSelectClick = (session) => {
     getSessionDetail(session.id).then(res => {
         messages.value = res
     })
+    loadSessionEmotion(session.id)
     const sessionData = {
         sessionId: "session_" + session.id,
         sessionTitle: session.sessionTitle,
@@ -314,6 +396,19 @@ const handleDeleteClick = (sessionId) => {
 }
 const formatMessageContent = (content) => {
     return content.replace(/\n/g, '<br>')
+}
+
+const getIntensityClass = (store) => {
+    if (store >= 61) { return 3 }
+    if (store >= 31) { return 2 }
+    return 1
+}
+const getRiskText = (risk) => {
+    if (risk === 0) { return '正常' }
+    if (risk === 1) { return '关注' }
+    if (risk === 2) { return '预警' }
+    if (risk === 3) { return '危机' }
+    else { return '未知风险' }
 }
 
 
