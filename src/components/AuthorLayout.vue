@@ -5,19 +5,23 @@
                 <h2 class="title">心理AI助手</h2>
                 <p class="text">每个深夜，每个焦虑的时刻，我们都在这里。不必独自承受，让心与心的连接温暖您的每一天</p>
                 <div class="robot">
-                    <el-image style="width: 90px; height: 90px;" :src="robotFill" alt="心理AI助手" />
+                    <el-image style="width: 90px; height: 90px;" :src="robotFill" alt="心理AI助手" @click="returnHome"
+                        cursor="pointer" />
                 </div>
             </div>
         </div>
         <div class="right">
-           <Login />
+            <router-view />
         </div>
     </div>
 </template>
 
 <script setup>
 const robotFill = new URL('@/assets/images/robot-fill.png', import.meta.url).href
-import Login from '@/views/Login.vue'
+import router from '@/router'
+const returnHome = () => {
+    router.push('/author/login')
+}
 </script>
 
 <style scoped>
