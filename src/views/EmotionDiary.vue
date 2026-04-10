@@ -3,7 +3,7 @@
         <div class="header-section">
             <div class="header-content">
                 <el-image :src="iconUrl" style="width: 60px; height: 60px;" />
-                <h1>情绪日志</h1>
+                <h1>情绪日记</h1>
             </div>
         </div>
         <div class="content">
@@ -28,7 +28,45 @@
                     </div>
                 </div>
             </div>
-            <div class="diary-card"></div>
+            <div class="diary-card">
+                <div class="title">详细记录</div>
+                <div class="detail-form">
+                    <div class="form-group">
+                        <div class="form-label">情绪触发因素</div>
+                        <el-input v-model="diaryForm.emotionTriggers" placeholder="今天什么事情影响了您的情绪？" type="textarea" :rows="3" maxlength="1000" show-word-limit></el-input>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label">今日感想</div>
+                        <el-input v-model="diaryForm.diaryContent" placeholder="写下您今天的想法、感受或发生的有趣事情..." type="textarea" :rows="5" maxlength="2000" show-word-limit></el-input>
+                    </div>
+                    <div class="life-indicators">
+                        <div class="indicator-group">
+                            <div class="form-label">睡眠质量</div>
+                            <el-select v-model="diaryForm.sleepQuality" placeholder="请选择您的睡眠质量">
+                                <el-option label="很差" value="1" />
+                                <el-option label="较差" value="2" />
+                                <el-option label="一般" value="3" />
+                                <el-option label="良好" value="4" />
+                                <el-option label="优秀" value="5" />
+                            </el-select>
+                        </div>
+                        <div class="indicator-group">
+                            <div class="form-label">压力水平</div>
+                            <el-select v-model="diaryForm.stressLevel" placeholder="请选择您的压力水平">
+                                <el-option label="很低" value="1" />
+                                <el-option label="较低" value="2" />
+                                <el-option label="一般" value="3" />
+                                <el-option label="较高" value="4" />
+                                <el-option label="很高" value="5" />
+                            </el-select>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <el-button  @click="resetForm">重置</el-button>
+                        <el-button type="primary" @click="submitDiary">提交</el-button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -36,13 +74,15 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { dayjs } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { submitEmotionDiary } from '@/api/frontend'
 const diaryForm = reactive({
     diaryDate: dayjs().format('YYYY-MM-DD'),
     moodScore: null,
     dominantEmotion: '',
     emotionTriggers: '',
     diaryContent: '',
-    sleepQualityP: null,
+    sleepQuality: null,
     stressLevel: null,
 })
 const emotionStatus = ['绝望崩溃', '消沉抑郁', '焦虑烦躁', '低落不悦', '平静淡然', '轻松惬意', '愉悦舒心', '欢欣满足', '兴奋欣喜', '极致幸福']
@@ -60,6 +100,29 @@ const emotionOptions = [
 const selectEmotion = (emotion) => {
     diaryForm.dominantEmotion = emotion
 }
+const resetForm = () => {
+    diaryForm.moodScore = null
+    diaryForm.dominantEmotion = ''
+    diaryForm.emotionTriggers = ''
+    diaryForm.diaryContent = ''
+    diaryForm.sleepQuality = null
+    diaryForm.stressLevel = null
+}
+const submitDiary = () => {
+    if (!diaryForm.moodScore) {
+        ElMessage.error('请选择您的情绪状态')
+        return
+    }
+    submitEmotionDiary(diaryForm).then(res => {
+        if (res.id) {
+            ElMessage.success('提交成功')
+            resetForm()
+        } else {
+            ElMessage.error(res.msg || '提交失败')
+        }
+    })
+}
+
 </script>
 
 <style scoped>

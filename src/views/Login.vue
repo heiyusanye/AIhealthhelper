@@ -2,10 +2,10 @@
     <div class="login-page">
         <div class="title">
             <div class="back-home">
-                <el-icon>
+                <el-icon @click="toHome" style="cursor: pointer;">
                     <Back />
                 </el-icon>
-                <span>返回首页</span>
+                <span @click="toHome" style="cursor: pointer;">返回首页</span>
             </div>
             <div class="title-text">
                 <h2>登录您的帐户</h2>
@@ -79,6 +79,9 @@ const submitForm = async (formEl) => {
     })
 }
 
+const toHome = () => {
+    router.push('/home')
+}
 </script>
 
 <style>

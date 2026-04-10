@@ -10,8 +10,7 @@
             </div>
         </div>
         <div class="right">
-            <Login v-if="!isRegister"></Login>
-            <Register v-if="isRegister"></Register>
+           <Login />
         </div>
     </div>
 </template>
@@ -19,25 +18,6 @@
 <script setup>
 const robotFill = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 import Login from '@/views/Login.vue'
-import Register from '@/views/Register.vue'
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { watchEffect } from 'vue'
-
-const isRegister = ref(false)
-const route = useRoute()
-watchEffect(() => {
-    const newVal = route.path
-    if (newVal === '/author/register') {
-        isRegister.value = true
-    } else {
-        isRegister.value = false
-    }
-    return isRegister.value
-})
-
-
-
 </script>
 
 <style scoped>
