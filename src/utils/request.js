@@ -110,6 +110,7 @@ const service = {
                   // 转换字段名以匹配前端期望
                   const transformedRecords = paginatedRecords.map(record => ({
                     ...record,
+                    moodScore: record.emotionScore,
                     diaryDate: record.createdAt.split(' ')[0],
                     sleepQuality: Math.floor(Math.random() * 5) + 1,
                     stressLevel: Math.floor(Math.random() * 5) + 1,
@@ -144,6 +145,7 @@ const service = {
                   // 转换默认数据的字段名
                   const transformedRecords = mockData.emotionDiaryAdminPage.data.records.map(record => ({
                     ...record,
+                    moodScore: record.emotionScore,
                     diaryDate: record.createdAt.split(' ')[0],
                     sleepQuality: Math.floor(Math.random() * 5) + 1,
                     stressLevel: Math.floor(Math.random() * 5) + 1,
