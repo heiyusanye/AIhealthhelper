@@ -15,10 +15,10 @@
         <div class="form-container">
             <el-form ref="ruleFormRef" :model="formData" :rules="rules" label-position="top">
                 <el-form-item label="用户名或邮箱" prop="username">
-                    <el-input v-model="formData.username" size="large" placeholder="请输入用户名" />
+                    <el-input v-model="formData.username" size="large" placeholder="请输入用户名（后台管理：admin，用户：allen）" />
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="formData.password" size="large" type="password" placeholder="请输入密码"
+                    <el-input v-model="formData.password" size="large" type="password" placeholder="请输入密码（密码任意）"
                         show-password />
                 </el-form-item>
                 <el-button class="login-btn" type="primary" size="large" @click="submitForm(ruleFormRef)">登录</el-button>
