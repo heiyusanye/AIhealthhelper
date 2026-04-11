@@ -12,7 +12,8 @@
                     推荐阅读
                 </div>
                 <div class="recommend-list">
-                    <div class="recommend-item" v-for="item in knowledgeList" :key="item.id" @click="goToDetail(item.id)">
+                    <div class="recommend-item" v-for="item in knowledgeList" :key="item.id"
+                        @click="goToDetail(item.id)">
                         <h4>{{ item.title }}</h4>
                         <p class="read-count"><el-icon>
                                 <Histogram />
@@ -22,7 +23,7 @@
             </div>
             <div class="article-list">
                 <div v-for="item in articleList" :key="item.id" class="article-item" @click="goToDetail(item.id)">
-                    <el-image :src="getImageUrl(item.coverImage)" alt="文章封面" style="width: 240px; height: 150px;" />
+                    <el-image :src="getImageUrl(item.cover)" alt="文章封面" style="width: 240px; height: 150px;" />
                     <div class="info">
                         <div class="title">
                             <h3>{{ item.title }}</h3>
@@ -42,7 +43,7 @@
                                 <span>{{ dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss') }}</span>
                             </div>
                         </div>
-                         <div :style="{ marginTop: '10px' }">
+                        <div :style="{ marginTop: '10px' }">
                             <div class="flex-box">
                                 <el-icon>
                                     <Platform />
@@ -53,13 +54,8 @@
                     </div>
                 </div>
                 <div class="pagination-wrapper">
-                    <el-pagination
-                        style="margin-top: 25px;"
-                        layout="prev, pager, next"
-                        :total="pagination.total"
-                        :page-size="pagination.size"
-                        @current-change="handleCurrentChange"
-                    />
+                    <el-pagination style="margin-top: 25px;" layout="prev, pager, next" :total="pagination.total"
+                        :page-size="pagination.size" @current-change="handleCurrentChange" />
                 </div>
             </div>
         </div>
@@ -75,9 +71,7 @@ import { getKnowledgeDetail } from '@/api/frontend'
 import router from '@/router'
 
 const goToDetail = (id) => {
-    getKnowledgeDetail(id).then(res => {
-        router.push(`/knowledge/detail/${id}`)
-    })
+    router.push(`/knowledge/detail/${id}`)
 }
 
 const iconUrl = new URL('@/assets/images/book.png', import.meta.url).href

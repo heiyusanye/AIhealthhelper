@@ -4,7 +4,12 @@
         <el-table :data="tableData" style="width: 100%">
             <el-table-column label="会话ID" width="100">
                 <template #default="scope">
-                    <el-avatar>{{ scope.row.userNickname }}</el-avatar>
+                    <el-avatar>{{ scope.row.id }}</el-avatar>
+                </template>
+            </el-table-column>
+            <el-table-column label="用户" width="120">
+                <template #default="scope">
+                    <div>{{ scope.row.userNickname }}</div>
                 </template>
             </el-table-column>
             <el-table-column label="情绪标签">
@@ -14,7 +19,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="messageCount" label="消息数" width="100"></el-table-column>
-            <el-table-column prop="lastMessageTime" label="时间" width="100"></el-table-column>
+            <el-table-column prop="startedAt" label="时间" width="150"></el-table-column>
             <el-table-column label="操作" width="100">
                 <template #default="scope">
                     <el-button type="primary" text @click="viewSessionDetail(scope.row)">查看详情</el-button>

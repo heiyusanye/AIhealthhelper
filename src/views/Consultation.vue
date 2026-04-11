@@ -184,7 +184,64 @@ import { startSession, deleteSession, getSessionList, getSessionDetail, getEmoti
 import { ElMessage } from 'element-plus'
 import { ChatRound, DeleteFilled } from '@element-plus/icons-vue'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
-import { fetchEventSource } from '@microsoft/fetch-event-source'
+
+// 模拟 fetchEventSource 函数
+const fetchEventSource = (url, options) => {
+    // 模拟网络延迟
+    setTimeout(() => {
+        // 从 mock.js 获取模拟的流数据
+        const mockResponse = {
+            code: '200',
+            data: {
+                content: '我理解你的感受，压力是现代生活中常见的问题。能具体说说是什么让你感到压力吗？这样我可以更好地帮助你。'
+            }
+        }
+
+        // 模拟流式数据推送
+        const responseChunks = [
+            '我理解你的感受，',
+            '压力是现代生活中常见的问题。',
+            '能具体说说是什么让你感到压力吗？',
+            '这样我可以更好地帮助你。'
+        ]
+
+        let index = 0
+        const interval = setInterval(() => {
+            if (index < responseChunks.length) {
+                // 调用 onmessage 回调
+                if (options.onmessage) {
+                    options.onmessage({
+                        data: JSON.stringify({
+                            code: '200',
+                            data: {
+                                content: responseChunks[index]
+                            }
+                        })
+                    })
+                }
+                index++
+            } else {
+                // 调用结束事件
+                if (options.onmessage) {
+                    options.onmessage({
+                        event: 'done',
+                        data: JSON.stringify({ code: '200' })
+                    })
+                }
+                clearInterval(interval)
+                // 调用 onClose 回调
+                if (options.onClose) {
+                    options.onClose()
+                }
+            }
+        }, 500)
+    }, 300)
+
+    // 返回一个可中止的控制器
+    return {
+        abort: () => { }
+    }
+}
 
 const robotUrl = new URL('@/assets/images/robot-fill.png', import.meta.url).href
 const likeUrl = new URL('@/assets/images/like.png', import.meta.url).href
@@ -312,7 +369,7 @@ const startAIResponse = (sessionId, userMessage) => {
     }
     messages.value.push(aiMessage)
     const ctrl = new AbortController()
-    fetchEventSource(`/api/psychological-chat/stream`, {
+    fetchEventSource(`/psychological-chat/stream`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -378,7 +435,18 @@ const getSessionPage = () => {
 const handleSelectClick = (session) => {
     currentSession.value = session
     getSessionDetail(session.id).then(res => {
-        messages.value = res
+        if (res && Array.isArray(res)) {
+            // 确保每个消息对象都有createdAt属性
+            messages.value = res.map(msg => ({
+                ...msg,
+                createdAt: msg.createdAt || new Date().toLocaleString()
+            }))
+        } else {
+            messages.value = []
+        }
+    }).catch(error => {
+        console.error('获取会话详情失败:', error)
+        messages.value = []
     })
     loadSessionEmotion(session.id)
     const sessionData = {

@@ -1,0 +1,985 @@
+// Mock 数据
+const mockData = {
+  // 登录
+  '/user/login': (data) => {
+    // 根据用户名返回不同的用户类型
+    if (data.username === 'admin') {
+      return {
+        code: '200',
+        data: {
+          token: 'mock-token-admin-123456',
+          userInfo: {
+            id: 1,
+            username: 'admin',
+            nickname: '管理员',
+            userType: 2
+          }
+        },
+        msg: '登录成功'
+      }
+    } else if (data.username === 'allen') {
+      return {
+        code: '200',
+        data: {
+          token: 'mock-token-allen-123456',
+          userInfo: {
+            id: 2,
+            username: 'allen',
+            nickname: '普通用户',
+            userType: 1
+          }
+        },
+        msg: '登录成功'
+      }
+    } else {
+      // 默认返回普通用户
+      return {
+        code: '200',
+        data: {
+          token: 'mock-token-user-123456',
+          userInfo: {
+            id: 3,
+            username: data.username,
+            nickname: data.username,
+            userType: 1
+          }
+        },
+        msg: '登录成功'
+      }
+    }
+  },
+  // 注册
+  '/user/add': {
+    code: '200',
+    data: {
+      id: 2,
+      username: 'user',
+      nickname: '普通用户',
+      userType: 1
+    },
+    msg: '注册成功'
+  },
+  // 退出登录
+  '/user/logout': {
+    code: '200',
+    data: null,
+    msg: '退出成功'
+  },
+  // 知识分类树
+  '/knowledge/category/tree': {
+    code: '200',
+    data: [
+      {
+        id: 1,
+        categoryName: '心理健康',
+        children: [
+          { id: 11, categoryName: '焦虑管理' },
+          { id: 12, categoryName: '抑郁缓解' },
+          { id: 13, categoryName: '压力调节' }
+        ]
+      },
+      {
+        id: 2,
+        categoryName: '情感关系',
+        children: [
+          { id: 21, categoryName: '亲子关系' },
+          { id: 22, categoryName: '恋爱关系' },
+          { id: 23, categoryName: '家庭关系' }
+        ]
+      },
+      {
+        id: 3,
+        categoryName: '自我成长',
+        children: [
+          { id: 31, categoryName: '自我认知' },
+          { id: 32, categoryName: '目标设定' },
+          { id: 33, categoryName: '时间管理' }
+        ]
+      }
+    ],
+    msg: '获取成功'
+  },
+  // 文章分页
+  '/knowledge/article/page': (params) => {
+    // 完整的文章列表
+    const allArticles = [
+      {
+        id: 1,
+        title: '如何有效管理焦虑情绪',
+        summary: '焦虑是一种常见的情绪反应，本文将介绍一些有效的焦虑管理方法。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=anxiety%20management%20tips&size=800x600',
+        categoryId: 11,
+        categoryName: '焦虑管理',
+        authorName: '心理专家',
+        readCount: 1234,
+        updatedAt: '2024-01-01 10:00:00',
+        status: 1
+      },
+      {
+        id: 2,
+        title: '抑郁情绪的自我调节',
+        summary: '抑郁情绪会影响我们的日常生活，本文提供一些自我调节的方法。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=depression%20self%20help&size=800x600',
+        categoryId: 12,
+        categoryName: '抑郁缓解',
+        authorName: '情绪管理师',
+        readCount: 987,
+        updatedAt: '2024-01-02 14:30:00',
+        status: 1
+      },
+      {
+        id: 3,
+        title: '压力管理的实用技巧',
+        summary: '现代生活压力大，学会有效管理压力对身心健康至关重要。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=stress%20management%20techniques&size=800x600',
+        categoryId: 13,
+        categoryName: '压力调节',
+        authorName: '压力管理专家',
+        readCount: 765,
+        updatedAt: '2024-01-03 09:15:00',
+        status: 1
+      },
+      {
+        id: 4,
+        title: '如何改善亲子关系',
+        summary: '良好的亲子关系对孩子的成长至关重要，本文提供一些改善亲子关系的方法。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=parent-child%20relationship%20improvement&size=800x600',
+        categoryId: 21,
+        categoryName: '亲子关系',
+        authorName: '家庭咨询师',
+        readCount: 654,
+        updatedAt: '2024-01-04 11:20:00',
+        status: 1
+      },
+      {
+        id: 5,
+        title: '恋爱关系中的沟通技巧',
+        summary: '有效沟通是维持健康恋爱关系的关键，本文介绍一些实用的沟通技巧。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=relationship%20communication%20skills&size=800x600',
+        categoryId: 22,
+        categoryName: '恋爱关系',
+        authorName: '情感专家',
+        readCount: 543,
+        updatedAt: '2024-01-05 15:45:00',
+        status: 1
+      },
+      {
+        id: 6,
+        title: '如何建立健康的家庭关系',
+        summary: '和谐的家庭关系是幸福生活的基础，本文提供一些建立健康家庭关系的建议。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=healthy%20family%20relationships&size=800x600',
+        categoryId: 23,
+        categoryName: '家庭关系',
+        authorName: '家庭治疗师',
+        readCount: 432,
+        updatedAt: '2024-01-06 10:30:00',
+        status: 1
+      },
+      {
+        id: 7,
+        title: '自我认知的重要性',
+        summary: '了解自己是个人成长的第一步，本文探讨自我认知的重要性及提升方法。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=self-awareness%20importance&size=800x600',
+        categoryId: 31,
+        categoryName: '自我认知',
+        authorName: '自我成长导师',
+        readCount: 321,
+        updatedAt: '2024-01-07 14:15:00',
+        status: 1
+      },
+      {
+        id: 8,
+        title: '如何设定有效的人生目标',
+        summary: '明确的目标是成功的方向，本文介绍如何设定和实现有效的人生目标。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=goal%20setting%20strategies&size=800x600',
+        categoryId: 32,
+        categoryName: '目标设定',
+        authorName: '人生规划师',
+        readCount: 210,
+        updatedAt: '2024-01-08 09:00:00',
+        status: 1
+      },
+      {
+        id: 9,
+        title: '时间管理的有效方法',
+        summary: '合理管理时间可以提高效率，本文分享一些实用的时间管理技巧。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=time%20management%20methods&size=800x600',
+        categoryId: 33,
+        categoryName: '时间管理',
+        authorName: '时间管理专家',
+        readCount: 198,
+        updatedAt: '2024-01-09 10:15:00',
+        status: 1
+      },
+      {
+        id: 10,
+        title: '如何建立自信',
+        summary: '自信是成功的关键，本文介绍一些建立和提升自信的方法。',
+        cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=building%20self-confidence&size=800x600',
+        categoryId: 31,
+        categoryName: '自我认知',
+        authorName: '自信教练',
+        readCount: 187,
+        updatedAt: '2024-01-10 14:30:00',
+        status: 1
+      }
+    ]
+    
+    // 根据参数筛选
+    let filteredArticles = allArticles
+    
+    if (params) {
+      // 按标题筛选
+      if (params.title) {
+        filteredArticles = filteredArticles.filter(article => 
+          article.title.includes(params.title)
+        )
+      }
+      
+      // 按分类筛选
+      if (params.categoryId) {
+        filteredArticles = filteredArticles.filter(article => 
+          article.categoryId === Number(params.categoryId)
+        )
+      }
+      
+      // 按状态筛选
+      if (params.status !== undefined) {
+        filteredArticles = filteredArticles.filter(article => 
+          article.status === Number(params.status)
+        )
+      }
+    }
+    
+    // 处理分页
+    const total = filteredArticles.length
+    const pageSize = params?.size || 10
+    const page = params?.currentPage || 1
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedArticles = filteredArticles.slice(startIndex, endIndex)
+    
+    return {
+      code: '200',
+      data: {
+        total,
+        records: paginatedArticles
+      },
+      msg: '获取成功'
+    }
+  },
+  // 文章详情
+  '/knowledge/article/1': {
+    code: '200',
+    data: {
+      id: 1,
+      title: '如何有效管理焦虑情绪',
+      content: '# 如何有效管理焦虑情绪\n\n焦虑是一种常见的情绪反应，当我们面临压力或不确定性时，往往会感到焦虑。适度的焦虑可以帮助我们保持警觉，但过度的焦虑则会影响我们的日常生活和身心健康。\n\n## 识别焦虑的症状\n\n- 心跳加速\n- 呼吸急促\n- 出汗\n- 颤抖\n- 头晕\n- 注意力不集中\n- 睡眠障碍\n\n## 有效的焦虑管理方法\n\n### 1. 深呼吸练习\n\n深呼吸是一种简单而有效的焦虑缓解方法。尝试以下步骤：\n\n1. 找一个安静的地方坐下或躺下\n2. 闭上眼睛，慢慢吸气，让空气充满肺部\n3. 屏住呼吸几秒钟\n4. 慢慢呼气，感受身体放松\n5. 重复这个过程5-10分钟\n\n### 2. 渐进式肌肉放松\n\n通过有意识地绷紧和放松身体的不同肌肉群，可以帮助缓解焦虑：\n\n1. 从脚趾开始，绷紧肌肉5秒钟\n2. 然后放松10秒钟\n3. 逐渐向上移动，依次放松小腿、大腿、臀部、腹部、胸部、手臂、肩膀和面部肌肉\n\n### 3. 正念冥想\n\n正念冥想可以帮助我们专注于当下，减少对过去和未来的担忧：\n\n1. 找一个舒适的坐姿\n2. 关注呼吸，感受空气进出身体的感觉\n3. 当思绪飘走时，温和地将注意力拉回到呼吸上\n4. 每天练习10-20分钟\n\n### 4. 保持健康的生活方式\n\n- 规律作息，保证充足的睡眠\n- 均衡饮食，避免过度摄入咖啡因和糖分\n- 定期运动，释放内啡肽\n- 减少酒精和尼古丁的摄入\n\n### 5. 寻求支持\n\n如果焦虑情绪严重影响生活，不要 hesitate to寻求专业帮助：\n\n- 与心理咨询师交谈\n- 加入支持小组\n- 与亲朋好友分享感受\n\n## 结论\n\n焦虑是可以管理的，通过以上方法，我们可以有效地缓解焦虑情绪，提高生活质量。记住，每个人的情况不同，找到适合自己的方法最重要。',
+      summary: '焦虑是一种常见的情绪反应，本文将介绍一些有效的焦虑管理方法。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=anxiety%20management%20tips&size=800x600',
+      categoryId: 11,
+      categoryName: '焦虑管理',
+      viewCount: 1234,
+      readCount: 1234,
+      createTime: '2024-01-01 10:00:00',
+      createdAt: '2024-01-01 10:00:00',
+      authorName: '心理健康专家',
+      tagArray: ['焦虑', '情绪管理', '心理健康'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 抑郁情绪的自我调节
+  '/knowledge/article/2': {
+    code: '200',
+    data: {
+      id: 2,
+      title: '抑郁情绪的自我调节',
+      content: '# 抑郁情绪的自我调节\n\n抑郁情绪是一种常见的心理健康问题，它会影响我们的情绪、思维和行为。虽然严重的抑郁症需要专业治疗，但轻度到中度的抑郁情绪可以通过自我调节来改善。\n\n## 认识抑郁情绪\n\n抑郁情绪的常见症状包括：\n\n- 持续的悲伤或空虚感\n- 对日常活动失去兴趣\n- 睡眠障碍（失眠或过度睡眠）\n- 食欲变化（食欲减退或增加）\n- 疲劳或缺乏精力\n- 注意力不集中\n- 自责或无价值感\n- 自杀念头\n\n## 自我调节方法\n\n### 1. 保持规律的作息\n\n建立规律的睡眠和起床时间，确保充足的睡眠。良好的睡眠可以改善情绪和精力水平。\n\n### 2. 适度运动\n\n运动可以释放内啡肽，改善情绪。即使是每天30分钟的轻度运动，如散步、瑜伽或骑自行车，也能产生积极效果。\n\n### 3. 健康饮食\n\n均衡的饮食可以提供身体所需的营养，有助于改善情绪。尽量避免过度摄入咖啡因、糖分和加工食品。\n\n### 4. 社交联系\n\n与朋友和家人保持联系，分享你的感受。孤独会加重抑郁情绪，而社交支持可以提供情感上的支持。\n\n### 5. 设定小目标\n\n设定可实现的小目标，逐步完成。每完成一个目标，都会给你带来成就感，增强自信心。\n\n### 6. 正念练习\n\n正念冥想可以帮助你专注于当下，减少负面思维。每天花10-15分钟进行正念练习。\n\n### 7. 寻求专业帮助\n\n如果自我调节方法效果不佳，或抑郁情绪严重影响生活，应及时寻求专业心理咨询或治疗。\n\n## 结论\n\n抑郁情绪是可以通过自我调节来改善的，但需要时间和耐心。尝试不同的方法，找到最适合自己的方式。记住，你并不孤独，有许多资源和支持可以帮助你度过难关。',
+      summary: '抑郁情绪会影响我们的日常生活，本文提供一些自我调节的方法。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=depression%20self%20help&size=800x600',
+      categoryId: 12,
+      categoryName: '抑郁缓解',
+      viewCount: 987,
+      readCount: 987,
+      createTime: '2024-01-02 14:30:00',
+      createdAt: '2024-01-02 14:30:00',
+      authorName: '心理健康专家',
+      tagArray: ['抑郁', '情绪管理', '自我调节'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 压力管理的实用技巧
+  '/knowledge/article/3': {
+    code: '200',
+    data: {
+      id: 3,
+      title: '压力管理的实用技巧',
+      content: '# 压力管理的实用技巧\n\n现代生活中，压力是不可避免的。无论是工作、学习还是生活，我们都会面临各种压力。学会有效地管理压力，对我们的身心健康至关重要。\n\n## 认识压力\n\n压力是身体对挑战或威胁的自然反应。适度的压力可以激发动力，但过度的压力会导致身心健康问题。\n\n## 压力管理技巧\n\n### 1. 时间管理\n\n- 制定每日计划，优先处理重要任务\n- 避免多任务处理，专注于一件事\n- 学会说“不”，避免过度承诺\n- 给自己留出休息和放松的时间\n\n### 2. 放松技巧\n\n- 深呼吸练习：缓慢吸气，屏住，然后缓慢呼气\n- 渐进式肌肉放松：依次绷紧和放松不同肌肉群\n- 冥想：专注于呼吸或特定的意象\n- 听音乐：选择舒缓的音乐来放松心情\n\n### 3. 身体活动\n\n- 定期运动：如散步、跑步、游泳或瑜伽\n- 伸展运动：缓解肌肉紧张\n- 户外活动：接触自然，呼吸新鲜空气\n\n### 4. 健康生活方式\n\n- 均衡饮食：多吃水果、蔬菜和全谷物\n- 充足睡眠：每晚7-8小时的睡眠\n- 限制咖啡因和酒精摄入\n- 保持水分：多喝水\n\n### 5. 心理调节\n\n- 积极思考：关注积极的方面\n- 挑战消极思维：识别并反驳消极想法\n- 培养幽默感：笑可以缓解压力\n- 保持 perspective：问自己“这件事一年后还重要吗？”\n\n### 6. 社交支持\n\n- 与朋友和家人交流\n- 参加社交活动\n- 寻求专业心理咨询（如果需要）\n\n## 结论\n\n压力管理是一个持续的过程，需要时间和实践。尝试不同的技巧，找到最适合自己的方法。记住，照顾好自己是最重要的，不要忽视压力对身心健康的影响。',
+      summary: '现代生活压力大，学会有效管理压力对身心健康至关重要。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=stress%20management%20techniques&size=800x600',
+      categoryId: 13,
+      categoryName: '压力调节',
+      viewCount: 765,
+      readCount: 765,
+      createTime: '2024-01-03 09:15:00',
+      createdAt: '2024-01-03 09:15:00',
+      authorName: '心理健康专家',
+      tagArray: ['压力管理', '心理健康', '生活技巧'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 如何改善亲子关系
+  '/knowledge/article/4': {
+    code: '200',
+    data: {
+      id: 4,
+      title: '如何改善亲子关系',
+      content: '# 如何改善亲子关系\n\n良好的亲子关系对孩子的成长和发展至关重要。它不仅影响孩子的心理健康，还会影响他们的社交能力和学习成绩。\n\n## 亲子关系的重要性\n\n- 建立孩子的安全感和自信心\n- 促进孩子的情感发展\n- 提高孩子的学习动力\n- 减少孩子的行为问题\n- 建立终身的亲密关系\n\n## 改善亲子关系的方法\n\n### 1. 有效沟通\n\n- 倾听孩子的想法和感受\n- 用温和的语气交流\n- 避免批评和指责\n- 鼓励孩子表达自己\n- 定期进行家庭对话\n\n### 2. 高质量的陪伴\n\n- 每天留出专门的时间与孩子相处\n- 参与孩子的活动和兴趣\n- 一起做有趣的事情，如游戏、阅读或户外活动\n- 给予孩子全神贯注的关注，避免分心\n\n### 3. 建立规则和界限\n\n- 设定明确的规则和期望\n- 保持规则的一致性\n- 给予适当的后果\n- 解释规则的原因\n- 与孩子一起制定规则\n\n### 4. 表达爱和支持\n\n- 经常表达对孩子的爱\n- 表扬孩子的努力和成就\n- 支持孩子的兴趣和梦想\n- 当孩子遇到困难时给予鼓励\n- 接纳孩子的不完美\n\n### 5. 自我反思和成长\n\n- 反思自己的育儿方式\n- 学习新的育儿技巧\n- 承认自己的错误并道歉\n- 与其他父母交流经验\n- 寻求专业帮助（如果需要）\n\n## 结论\n\n改善亲子关系需要时间、耐心和努力。通过有效的沟通、高质量的陪伴、明确的规则、表达爱和支持，以及自我反思，你可以建立一个健康、和谐的亲子关系。记住，每个孩子都是独特的，需要根据他们的个性和需求调整你的方法。',
+      summary: '良好的亲子关系对孩子的成长至关重要，本文提供一些改善亲子关系的方法。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=parent-child%20relationship%20improvement&size=800x600',
+      categoryId: 21,
+      categoryName: '亲子关系',
+      viewCount: 654,
+      readCount: 654,
+      createTime: '2024-01-04 11:20:00',
+      createdAt: '2024-01-04 11:20:00',
+      authorName: '家庭教育专家',
+      tagArray: ['亲子关系', '家庭教育', '沟通技巧'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 恋爱关系中的沟通技巧
+  '/knowledge/article/5': {
+    code: '200',
+    data: {
+      id: 5,
+      title: '恋爱关系中的沟通技巧',
+      content: '# 恋爱关系中的沟通技巧\n\n有效沟通是维持健康恋爱关系的关键。良好的沟通可以帮助伴侣更好地理解彼此，解决冲突，建立更深层次的连接。\n\n## 沟通的重要性\n\n- 增强彼此的理解和信任\n- 减少误解和冲突\n- 促进情感交流\n- 解决问题和矛盾\n- 加深亲密关系\n\n## 有效的沟通技巧\n\n### 1. 积极倾听\n\n- 全神贯注地听对方说话\n- 避免打断对方\n- 用点头、眼神接触等非语言信号表示你在听\n- 用自己的话复述对方的观点，确保理解正确\n- 询问问题以获得更多信息\n\n### 2. 表达感受而非指责\n\n- 使用“我”语句表达感受，如“我感到受伤”而不是“你总是伤害我”\n- 描述具体的行为，而不是笼统地批评\n- 避免使用绝对化的词语，如“总是”、“从不”\n- 关注问题本身，而不是攻击对方的人格\n\n### 3. 保持尊重和同理心\n\n- 尊重对方的观点和感受\n- 尝试从对方的角度看问题\n- 承认对方的感受是 valid 的\n- 避免贬低或嘲笑对方的想法\n- 保持开放的心态\n\n### 4. 选择合适的时机和地点\n\n- 选择双方都冷静、放松的时机\n- 避免在公共场合或有他人在场时讨论敏感话题\n- 确保有足够的时间进行充分的交流\n- 避免在疲惫、饥饿或压力大的时候进行重要对话\n\n### 5. 解决冲突的技巧\n\n- 聚焦于当前问题，避免翻旧账\n- 寻找共同的解决方案，而不是争输赢\n- 愿意妥协和让步\n- 承认自己的错误并道歉\n- 寻求专业帮助（如果需要）\n\n## 结论\n\n良好的沟通是恋爱关系的基石。通过积极倾听、表达感受、保持尊重、选择合适的时机和地点，以及有效的冲突解决技巧，你可以建立一个健康、和谐的恋爱关系。记住，沟通是一个双向的过程，需要双方的努力和投入。',
+      summary: '有效沟通是维持健康恋爱关系的关键，本文介绍一些实用的沟通技巧。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=relationship%20communication%20skills&size=800x600',
+      categoryId: 22,
+      categoryName: '恋爱关系',
+      viewCount: 543,
+      readCount: 543,
+      createTime: '2024-01-05 15:45:00',
+      createdAt: '2024-01-05 15:45:00',
+      authorName: '情感专家',
+      tagArray: ['恋爱关系', '沟通技巧', '情感健康'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 如何建立健康的家庭关系
+  '/knowledge/article/6': {
+    code: '200',
+    data: {
+      id: 6,
+      title: '如何建立健康的家庭关系',
+      content: '# 如何建立健康的家庭关系\n\n和谐的家庭关系是幸福生活的基础。它不仅影响家庭成员的心理健康，还会影响整个家庭的氛围和每个成员的成长。\n\n## 健康家庭关系的特征\n\n- 相互尊重和理解\n- 有效的沟通\n- 支持和鼓励\n- 共同的价值观和目标\n- 解决冲突的能力\n- 家庭成员之间的亲密感\n\n## 建立健康家庭关系的方法\n\n### 1. 建立家庭价值观\n\n- 与家人一起讨论和确定家庭价值观\n- 明确家庭规则和期望\n- 以身作则，展示你希望家人遵循的价值观\n- 定期回顾和调整家庭价值观\n\n### 2. 促进有效沟通\n\n- 定期举行家庭会议，讨论重要事项\n- 创造开放、诚实的沟通环境\n- 倾听每个家庭成员的意见和感受\n- 避免批评和指责，使用建设性的反馈\n- 鼓励家庭成员表达自己的想法\n\n### 3. 培养家庭凝聚力\n\n- 一起参与家庭活动，如聚餐、游戏或户外活动\n- 建立家庭传统和仪式\n- 共同完成家务和责任\n- 庆祝家庭成员的成就和重要时刻\n- 支持家庭成员的个人兴趣和目标\n\n### 4. 解决冲突的健康方式\n\n- 保持冷静，避免在情绪激动时讨论问题\n- 聚焦于问题本身，而不是攻击个人\n- 寻找双赢的解决方案\n- 愿意妥协和让步\n- 承认自己的错误并道歉\n- 寻求专业帮助（如果需要）\n\n### 5. 投资时间和精力\n\n- 为家庭活动留出专门的时间\n- 关注每个家庭成员的需求和感受\n- 表达爱和欣赏\n- 创造温馨、支持的家庭环境\n- 培养家庭成员之间的信任和亲密感\n\n## 结论\n\n建立健康的家庭关系需要时间、努力和承诺。通过建立家庭价值观、促进有效沟通、培养家庭凝聚力、解决冲突的健康方式，以及投资时间和精力，你可以创造一个和谐、支持的家庭环境。记住，每个家庭都是独特的，需要根据家庭成员的需求和个性调整你的方法。',
+      summary: '和谐的家庭关系是幸福生活的基础，本文提供一些建立健康家庭关系的建议。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=healthy%20family%20relationships&size=800x600',
+      categoryId: 23,
+      categoryName: '家庭关系',
+      viewCount: 432,
+      readCount: 432,
+      createTime: '2024-01-06 10:30:00',
+      createdAt: '2024-01-06 10:30:00',
+      authorName: '家庭关系专家',
+      tagArray: ['家庭关系', '沟通技巧', '家庭和谐'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 自我认知的重要性
+  '/knowledge/article/7': {
+    code: '200',
+    data: {
+      id: 7,
+      title: '自我认知的重要性',
+      content: '# 自我认知的重要性\n\n自我认知是了解自己的思想、感受、价值观和行为的能力。它是个人成长和幸福的基础，对我们的人际关系、职业发展和心理健康都有着深远的影响。\n\n## 自我认知的定义\n\n自我认知是指对自己的认识和理解，包括：\n\n- 了解自己的优势和劣势\n- 认识自己的情绪和反应\n- 理解自己的价值观和信念\n- 意识到自己的行为模式\n- 认识自己的需求和动机\n\n## 自我认知的重要性\n\n### 1. 促进个人成长\n\n- 帮助你识别需要改进的领域\n- 让你能够设定符合自己价值观的目标\n- 促进自我反思和学习\n- 提高自我意识和自我管理能力\n\n### 2. 改善人际关系\n\n- 帮助你更好地理解自己的行为对他人的影响\n- 提高同理心和理解他人的能力\n- 促进更有效的沟通\n- 建立更健康、更真实的关系\n\n### 3. 提升职业发展\n\n- 帮助你识别自己的职业优势和兴趣\n- 让你能够设定符合自己能力和价值观的职业目标\n- 提高自我管理和领导力\n- 促进职业满意度和成功\n\n### 4. 增强心理健康\n\n- 帮助你识别和管理负面情绪\n- 减少自我怀疑和焦虑\n- 提高自尊和自信\n- 促进心理韧性和幸福感\n\n## 提高自我认知的方法\n\n### 1. 自我反思\n\n- 定期花时间思考自己的思想、感受和行为\n- 写日记记录自己的经历和反思\n- 问自己问题，如“我今天学到了什么？”、“我感到自豪的是什么？”\n\n### 2. 寻求反馈\n\n- 向信任的朋友、家人或同事寻求诚实的反馈\n- 接受建设性的批评\n- 从反馈中学习，而不是防御\n\n### 3. 尝试新体验\n\n- 挑战自己，尝试新的活动和经历\n- 从新的体验中学习关于自己的新事物\n- 走出舒适区，发现自己的潜力\n\n### 4. 冥想和正念\n\n- 练习冥想，关注当下的思想和感受\n- 培养正念，提高对自己内心状态的觉察\n- 学习观察自己的思想和情绪，而不是被它们控制\n\n## 结论\n\n自我认知是个人成长和幸福的关键。通过自我反思、寻求反馈、尝试新体验和练习冥想，你可以提高自我认知，从而改善人际关系、提升职业发展、增强心理健康。记住，自我认知是一个持续的过程，需要时间和努力，但它是值得的。',
+      summary: '了解自己是个人成长的第一步，本文探讨自我认知的重要性及提升方法。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=self-awareness%20importance&size=800x600',
+      categoryId: 31,
+      categoryName: '自我认知',
+      viewCount: 321,
+      readCount: 321,
+      createTime: '2024-01-07 14:15:00',
+      createdAt: '2024-01-07 14:15:00',
+      authorName: '自我成长专家',
+      tagArray: ['自我认知', '个人成长', '心理健康'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 如何设定有效的人生目标
+  '/knowledge/article/8': {
+    code: '200',
+    data: {
+      id: 8,
+      title: '如何设定有效的人生目标',
+      content: '# 如何设定有效的人生目标\n\n明确的目标是成功的方向，它可以帮助我们聚焦努力，保持动力，实现个人和职业的成长。设定有效的人生目标是一项重要的技能，需要认真思考和规划。\n\n## 目标的重要性\n\n- 提供方向和焦点\n- 激发动力和积极性\n- 帮助衡量进步\n- 增强自信和自尊\n- 促进个人成长和发展\n\n## 设定有效目标的原则\n\n### 1. 明确具体\n\n- 目标应该具体、明确，避免模糊不清\n- 例如，不说“我想变得更健康”，而说“我想每周锻炼3次，每次30分钟”\n- 具体的目标更容易追踪和实现\n\n### 2. 可衡量\n\n- 目标应该可以量化，以便衡量进度\n- 例如，不说“我想学习一门新语言”，而说“我想在6个月内掌握1000个西班牙语单词”\n- 可衡量的目标让你能够看到自己的进步\n\n### 3. 可实现\n\n- 目标应该具有挑战性，但同时是可实现的\n- 避免设定过于困难或不切实际的目标\n- 设定可以通过努力实现的目标，增强自信心\n\n### 4. 相关性\n\n- 目标应该与你的价值观和长期愿景相关\n- 确保目标对你个人有意义\n- 避免设定与你真正想要的东西无关的目标\n\n### 5. 有时限\n\n- 为目标设定明确的时间期限\n- 例如，不说“我想写一本书”，而说“我想在一年内完成一本200页的书”\n- 时间限制可以创造紧迫感，帮助你保持动力\n\n## 设定目标的步骤\n\n### 1. 自我反思\n\n- 思考你真正想要的是什么\n- 考虑你的价值观、兴趣和优势\n- 想象你理想的未来生活\n\n### 2. 设定长期目标\n\n- 确定你想要在5年、10年或更长时间内实现的目标\n- 这些目标应该是你人生的大方向\n\n### 3. 分解为短期目标\n\n- 将长期目标分解为 smaller, manageable 的短期目标\n- 每个短期目标应该是实现长期目标的一步\n\n### 4. 制定行动计划\n\n- 为每个短期目标制定具体的行动计划\n- 确定需要采取的步骤和资源\n- 设定时间表和里程碑\n\n### 5. 定期评估和调整\n\n- 定期检查你的进度\n- 庆祝小的成就\n- 根据需要调整目标和计划\n- 保持灵活性，适应变化的情况\n\n## 结论\n\n设定有效的人生目标是实现个人和职业成功的关键。通过遵循明确具体、可衡量、可实现、相关性和有时限的原则，你可以设定能够激励和引导你的目标。记住，目标设定是一个持续的过程，需要定期评估和调整。最重要的是，享受追求目标的过程，而不仅仅是到达目的地。',
+      summary: '明确的目标是成功的方向，本文介绍如何设定和实现有效的人生目标。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=goal%20setting%20strategies&size=800x600',
+      categoryId: 32,
+      categoryName: '目标设定',
+      viewCount: 210,
+      readCount: 210,
+      createTime: '2024-01-08 09:00:00',
+      createdAt: '2024-01-08 09:00:00',
+      authorName: '人生规划专家',
+      tagArray: ['目标设定', '个人成长', '成功', '人生规划'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 时间管理的有效方法
+  '/knowledge/article/9': {
+    code: '200',
+    data: {
+      id: 9,
+      title: '时间管理的有效方法',
+      content: '# 时间管理的有效方法\n\n时间是我们最宝贵的资源之一，有效的时间管理可以帮助我们提高效率，减少压力，实现更多的目标。无论你是学生、专业人士还是企业家，良好的时间管理技能都是成功的关键。\n\n## 时间管理的重要性\n\n- 提高工作和学习效率\n- 减少压力和焦虑\n- 增加成就感和满足感\n- 为重要的事情留出时间\n- 改善工作与生活的平衡\n\n## 有效的时间管理方法\n\n### 1. 设定优先事项\n\n- 使用四象限法则：将任务分为紧急重要、重要不紧急、紧急不重要、不紧急不重要\n- 优先处理重要紧急的任务\n- 为重要不紧急的任务预留时间\n- 尽量减少或委托紧急不重要的任务\n- 避免不紧急不重要的任务\n\n### 2. 制定计划\n\n- 每天开始前制定当日计划\n- 每周开始前制定周计划\n- 每月开始前制定月计划\n- 使用日历、待办事项列表或时间管理应用\n- 为每个任务分配具体的时间\n\n### 3. 避免 multitasking\n\n- 一次专注于一项任务\n- 减少干扰和分心\n- 关闭手机通知和社交媒体\n- 创建专注的工作环境\n- 使用番茄工作法：25分钟工作，5分钟休息\n\n### 4. 学会说“不”\n\n- 避免过度承诺\n- 只接受与你的目标和优先事项一致的任务\n- 礼貌地拒绝不符合你优先事项的请求\n- 为自己留出时间和空间\n\n### 5. 管理时间浪费\n\n- 识别并减少时间浪费的活动\n- 限制社交媒体和娱乐的时间\n- 避免无意义的会议和闲聊\n- 优化日常任务，如电子邮件处理\n- 使用时间跟踪工具来了解你的时间使用情况\n\n### 6. 休息和恢复\n\n- 定期休息，避免 burnout\n- 保证充足的睡眠\n- 安排放松和娱乐的时间\n- 定期进行身体活动\n- 给自己充电，保持精力充沛\n\n## 结论\n\n有效的时间管理是一项可以学习和培养的技能。通过设定优先事项、制定计划、避免 multitasking、学会说“不”、管理时间浪费，以及重视休息和恢复，你可以更有效地利用时间，实现更多的目标，提高生活质量。记住，时间管理的目标不是填满每一分钟，而是让你的时间使用与你的价值观和目标一致。',
+      summary: '合理管理时间可以提高效率，本文分享一些实用的时间管理技巧。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=time%20management%20methods&size=800x600',
+      categoryId: 33,
+      categoryName: '时间管理',
+      viewCount: 198,
+      readCount: 198,
+      createTime: '2024-01-09 10:15:00',
+      createdAt: '2024-01-09 10:15:00',
+      authorName: '时间管理专家',
+      tagArray: ['时间管理', '效率', '工作与生活平衡', '时间规划'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 文章详情 - 如何建立自信
+  '/knowledge/article/10': {
+    code: '200',
+    data: {
+      id: 10,
+      title: '如何建立自信',
+      content: '# 如何建立自信\n\n自信是成功的关键，它影响我们的人际关系、职业发展和心理健康。建立自信是一个过程，需要时间、努力和自我意识。\n\n## 自信的重要性\n\n- 提高自我-esteem和自我价值感\n- 增强面对挑战的勇气\n- 改善人际关系\n- 促进职业成功\n- 提高心理健康和幸福感\n\n## 建立自信的方法\n\n### 1. 认识自己的优势\n\n- 列出你的优点和成就\n- 关注你的成功，而不是失败\n- 接受并欣赏自己的独特性\n- 认识到每个人都有自己的优势和劣势\n\n### 2. 设定可实现的目标\n\n- 设定小而具体的目标\n- 逐步实现目标，增强成就感\n- 庆祝每一个小的成功\n- 从成功中学习，建立信心\n\n### 3. 挑战消极思维\n\n- 识别并挑战消极的自我对话\n- 用积极的自我肯定替代消极的想法\n- 关注事实，而不是假设\n- 学会接受建设性的批评，而不是自我否定\n\n### 4. 采取行动\n\n- 面对你的恐惧，逐步走出舒适区\n- 尝试新的事物，拓展你的能力\n- 从错误中学习，而不是被它们打败\n- 坚持努力，培养韧性\n\n### 5. 照顾自己\n\n- 保持健康的生活方式，包括饮食、运动和睡眠\n- 穿着让你感觉良好的衣服\n- 保持良好的个人卫生和外表\n- 给自己留出时间放松和做你喜欢的事情\n\n### 6. 建立支持系统\n\n- 与支持和鼓励你的人在一起\n- 避免消极和批评的人\n- 寻求导师或榜样\n- 加入支持性的群体或社区\n\n### 7. 学习和成长\n\n- 不断学习新的技能和知识\n- 挑战自己，设定更高的目标\n- 保持好奇心和开放的心态\n- 从经验中学习，不断成长\n\n## 结论\n\n建立自信是一个持续的过程，需要时间和努力。通过认识自己的优势、设定可实现的目标、挑战消极思维、采取行动、照顾自己、建立支持系统，以及持续学习和成长，你可以建立和增强自信。记住，自信不是关于完美，而是关于相信自己有能力面对挑战和克服困难。每个人都可以建立自信，只要你愿意投入时间和努力。',
+      summary: '自信是成功的关键，本文介绍一些建立和提升自信的方法。',
+      cover: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=building%20self-confidence&size=800x600',
+      categoryId: 31,
+      categoryName: '自我认知',
+      viewCount: 187,
+      readCount: 187,
+      createTime: '2024-01-10 14:30:00',
+      createdAt: '2024-01-10 14:30:00',
+      authorName: '自信教练',
+      tagArray: ['自信', '自我认知', '个人成长', '心理健康'],
+      status: 1
+    },
+    msg: '获取成功'
+  },
+  // 上传文件
+  '/file/upload': {
+    code: '200',
+    data: {
+      url: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=uploaded%20image&size=800x600'
+    },
+    msg: '上传成功'
+  },
+  // 创建文章
+  '/knowledge/article': {
+    code: '200',
+    data: {
+      id: 4,
+      title: '新文章标题',
+      content: '新文章内容',
+      createTime: '2024-01-04 10:00:00'
+    },
+    msg: '创建成功'
+  },
+  // 更新文章
+  '/knowledge/article/1': {
+    code: '200',
+    data: {
+      id: 1,
+      title: '更新后的文章标题',
+      content: '更新后的文章内容',
+      updateTime: '2024-01-04 10:00:00'
+    },
+    msg: '更新成功'
+  },
+  // 改变文章状态
+  '/knowledge/article/1/status': {
+    code: '200',
+    data: null,
+    msg: '状态更新成功'
+  },
+  // 删除文章
+  '/knowledge/article/1': {
+    code: '200',
+    data: null,
+    msg: '删除成功'
+  },
+  // 咨询记录列表
+  '/psychological-chat/sessions': {
+    code: '200',
+    data: {
+      total: 10,
+      records: [
+        {
+          id: 1,
+          sessionTitle: '心理健康咨询',
+          startedAt: '2024-01-01 10:00:00',
+          lastMessageContent: '我最近感到压力很大...',
+          messageCount: 10,
+          durationMinutes: 30,
+          userNickname: '用户1'
+        },
+        {
+          id: 2,
+          sessionTitle: '情感问题咨询',
+          startedAt: '2024-01-02 14:30:00',
+          lastMessageContent: '我和家人的关系很紧张...',
+          messageCount: 15,
+          durationMinutes: 45,
+          userNickname: '用户2'
+        },
+        {
+          id: 3,
+          sessionTitle: '工作压力咨询',
+          startedAt: '2024-01-03 09:15:00',
+          lastMessageContent: '工作任务太多，无法完成...',
+          messageCount: 12,
+          durationMinutes: 35,
+          userNickname: '用户3'
+        },
+        {
+          id: 4,
+          sessionTitle: '人际关系咨询',
+          startedAt: '2024-01-04 16:20:00',
+          lastMessageContent: '我和同事之间有矛盾...',
+          messageCount: 8,
+          durationMinutes: 25,
+          userNickname: '用户1'
+        },
+        {
+          id: 5,
+          sessionTitle: '自我成长咨询',
+          startedAt: '2024-01-05 11:30:00',
+          lastMessageContent: '我想提升自己的能力...',
+          messageCount: 14,
+          durationMinutes: 40,
+          userNickname: '用户2'
+        }
+      ]
+    },
+    msg: '获取成功'
+  },
+  // 咨询记录详情
+  '/psychological-chat/sessions/1/messages': {
+    code: '200',
+    data: [
+      {
+        id: 1,
+        senderType: 1,
+        content: '我最近感到压力很大，工作和生活都不太顺利。',
+        createdAt: '2024-01-01 10:00:00'
+      },
+      {
+        id: 2,
+        senderType: 2,
+        content: '我理解你的感受，压力是现代生活中常见的问题。能具体说说是什么让你感到压力吗？',
+        createdAt: '2024-01-01 10:02:00'
+      },
+      {
+        id: 3,
+        senderType: 1,
+        content: '主要是工作上的任务很多，经常需要加班，回到家后感觉很累，没有时间做自己喜欢的事情。',
+        createdAt: '2024-01-01 10:05:00'
+      },
+      {
+        id: 4,
+        senderType: 2,
+        content: '工作压力确实会影响我们的生活质量。你尝试过一些减压方法吗？比如运动、冥想或者时间管理？',
+        createdAt: '2024-01-01 10:08:00'
+      }
+    ],
+    msg: '获取成功'
+  },
+  // 情绪分析
+  '/psychological-chat/session/1/emotion': {
+    code: '200',
+    data: {
+      primaryEmotion: '焦虑',
+      emotionScore: 65,
+      isNegative: true,
+      riskLevel: 1,
+      suggestion: '建议适当放松，尝试一些减压活动，如散步、听音乐等。',
+      improvementSuggestions: [
+        '每天进行30分钟的有氧运动',
+        '尝试冥想或深呼吸练习',
+        '合理安排工作时间，避免过度加班'
+      ],
+      label: '焦虑'
+    },
+    msg: '获取成功'
+  },
+  // 开始会话
+  '/psychological-chat/session/start': {
+    code: '200',
+    data: {
+      sessionId: 'session_123456',
+      status: 'ACTIVE'
+    },
+    msg: '会话开始成功'
+  },
+  // 删除会话
+  '/psychological-chat/sessions/1': {
+    code: '200',
+    data: null,
+    msg: '删除成功'
+  },
+  // 提交情绪日记
+  '/emotion-diary': {
+    code: '200',
+    data: {
+      id: 1,
+      content: '今天的心情日记内容',
+      createTime: '2024-01-01 10:00:00'
+    },
+    msg: '提交成功'
+  },
+  // AI咨询流式回复
+  '/psychological-chat/stream': (data) => {
+    // 模拟流式回复数据
+    const responses = [
+      '我理解你的感受，',
+      '压力是现代生活中常见的问题。',
+      '能具体说说是什么让你感到压力吗？',
+      '这样我可以更好地帮助你。'
+    ]
+    
+    // 这里返回一个模拟的流数据结构
+    // 实际项目中，这里应该返回一个ReadableStream
+    return {
+      code: '200',
+      data: {
+        content: responses.join('')
+      },
+      msg: '获取成功'
+    }
+  },
+  // 心情日记分页列表
+  '/emotion-diary/admin/page': (params) => {
+    // 完整的情绪日记列表
+    const allDiaries = [
+      {
+        id: 1,
+        userId: 1,
+        username: '用户1',
+        nickname: 'User1',
+        sessionId: 'session_001',
+        diaryDate: '2024-01-01',
+        moodScore: 8,
+        dominantEmotion: '快乐',
+        emotionTriggers: '天气好，完成了工作任务',
+        diaryContent: '今天天气很好，心情不错！完成了所有工作任务，感觉很有成就感。',
+        sleepQuality: 4,
+        stressLevel: 2,
+        aiEmotionAnalysis: JSON.stringify({
+          primaryEmotion: '快乐',
+          emotionScore: 85,
+          riskLevel: 0,
+          isNegative: false,
+          suggestion: '保持积极的心态，继续努力工作和生活。',
+          riskDescription: '无明显风险',
+          improvementSuggestions: [
+            '继续保持良好的工作生活平衡',
+            '定期进行体育锻炼',
+            '保持乐观的心态'
+          ]
+        }),
+        createdAt: '2024-01-01 10:00:00',
+        updatedAt: '2024-01-01 10:00:00'
+      },
+      {
+        id: 2,
+        userId: 2,
+        username: '用户2',
+        nickname: 'User2',
+        sessionId: 'session_002',
+        diaryDate: '2024-01-02',
+        moodScore: 4,
+        dominantEmotion: '焦虑',
+        emotionTriggers: '工作压力大',
+        diaryContent: '工作压力有点大，需要调整心态。最近任务很多，经常需要加班。',
+        sleepQuality: 3,
+        stressLevel: 4,
+        aiEmotionAnalysis: JSON.stringify({
+          primaryEmotion: '焦虑',
+          emotionScore: 65,
+          riskLevel: 1,
+          isNegative: true,
+          suggestion: '建议适当放松，尝试一些减压活动，如散步、听音乐等。',
+          riskDescription: '轻度焦虑，需要关注',
+          improvementSuggestions: [
+            '每天进行30分钟的有氧运动',
+            '尝试冥想或深呼吸练习',
+            '合理安排工作时间，避免过度加班'
+          ]
+        }),
+        createdAt: '2024-01-02 14:30:00',
+        updatedAt: '2024-01-02 14:30:00'
+      },
+      {
+        id: 3,
+        userId: 3,
+        username: '用户3',
+        nickname: 'User3',
+        sessionId: 'session_003',
+        diaryDate: '2024-01-03',
+        moodScore: 7,
+        dominantEmotion: '平静',
+        emotionTriggers: '一切顺利',
+        diaryContent: '今天一切顺利，心情平静。工作和生活都很平衡。',
+        sleepQuality: 5,
+        stressLevel: 2,
+        aiEmotionAnalysis: JSON.stringify({
+          primaryEmotion: '平静',
+          emotionScore: 70,
+          riskLevel: 0,
+          isNegative: false,
+          suggestion: '保持当前的生活状态，继续维持良好的工作生活平衡。',
+          riskDescription: '无明显风险',
+          improvementSuggestions: [
+            '继续保持规律的作息时间',
+            '定期进行自我反思',
+            '保持与朋友和家人的联系'
+          ]
+        }),
+        createdAt: '2024-01-03 09:15:00',
+        updatedAt: '2024-01-03 09:15:00'
+      },
+      {
+        id: 4,
+        userId: 1,
+        username: '用户1',
+        nickname: 'User1',
+        sessionId: 'session_004',
+        diaryDate: '2024-01-04',
+        moodScore: 3,
+        dominantEmotion: '悲伤',
+        emotionTriggers: '遇到挫折',
+        diaryContent: '今天遇到了一些挫折，心情不太好。项目进展不顺利，需要重新规划。',
+        sleepQuality: 2,
+        stressLevel: 5,
+        aiEmotionAnalysis: JSON.stringify({
+          primaryEmotion: '悲伤',
+          emotionScore: 40,
+          riskLevel: 2,
+          isNegative: true,
+          suggestion: '建议寻求支持，与朋友或家人交流，同时调整自己的预期和计划。',
+          riskDescription: '中度情绪困扰，需要关注',
+          improvementSuggestions: [
+            '与信任的人分享自己的感受',
+            '设定小目标，逐步完成',
+            '寻找积极的应对策略'
+          ]
+        }),
+        createdAt: '2024-01-04 16:20:00',
+        updatedAt: '2024-01-04 16:20:00'
+      },
+      {
+        id: 5,
+        userId: 2,
+        username: '用户2',
+        nickname: 'User2',
+        sessionId: 'session_005',
+        diaryDate: '2024-01-05',
+        moodScore: 9,
+        dominantEmotion: '兴奋',
+        emotionTriggers: '完成重要任务',
+        diaryContent: '今天完成了一个重要任务，感觉很有成就感！得到了领导的表扬。',
+        sleepQuality: 4,
+        stressLevel: 1,
+        aiEmotionAnalysis: JSON.stringify({
+          primaryEmotion: '兴奋',
+          emotionScore: 90,
+          riskLevel: 0,
+          isNegative: false,
+          suggestion: '享受成功的喜悦，同时保持谦虚，为未来的挑战做好准备。',
+          riskDescription: '无明显风险',
+          improvementSuggestions: [
+            '庆祝自己的成就',
+            '设定新的目标',
+            '分享成功经验'
+          ]
+        }),
+        createdAt: '2024-01-05 11:30:00',
+        updatedAt: '2024-01-05 11:30:00'
+      }
+    ]
+    
+    // 根据参数筛选
+    let filteredDiaries = allDiaries
+    
+    if (params) {
+      // 按用户ID筛选
+      if (params.userId) {
+        filteredDiaries = filteredDiaries.filter(diary => 
+          diary.userId === Number(params.userId)
+        )
+      }
+      
+      // 按情绪评分范围筛选
+      if (params.minMoodScore !== undefined && params.maxMoodScore !== undefined) {
+        filteredDiaries = filteredDiaries.filter(diary => 
+          diary.moodScore >= Number(params.minMoodScore) && 
+          diary.moodScore <= Number(params.maxMoodScore)
+        )
+      }
+    }
+    
+    // 处理分页
+    const total = filteredDiaries.length
+    const pageSize = params?.size || 10
+    const page = params?.current || 1
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedDiaries = filteredDiaries.slice(startIndex, endIndex)
+    
+    return {
+      code: '200',
+      data: {
+        total,
+        records: paginatedDiaries
+      },
+      msg: '获取成功'
+    }
+  },
+  // 删除心情日记
+  '/emotion-diary/admin/1': {
+    code: '200',
+    data: null,
+    msg: '删除成功'
+  },
+  // 综合数据分析
+  '/data-analytics/overview': {
+    code: '200',
+    data: {
+      // 系统概览
+      systemOverview: {
+        totalUsers: 1000,
+        activeUsers: 350,
+        totalDiaries: 300,
+        todayNewDiaries: 25,
+        totalSessions: 200,
+        todayNewSessions: 15,
+        avgMoodScore: 7.2
+      },
+      // 情绪趋势分析
+      emotionTrend: [
+        { date: '2024-01-01', avgMoodScore: 7.2, recordCount: 45 },
+        { date: '2024-01-02', avgMoodScore: 6.8, recordCount: 40 },
+        { date: '2024-01-03', avgMoodScore: 6.5, recordCount: 48 },
+        { date: '2024-01-04', avgMoodScore: 7.0, recordCount: 42 },
+        { date: '2024-01-05', avgMoodScore: 7.5, recordCount: 50 },
+        { date: '2024-01-06', avgMoodScore: 7.3, recordCount: 46 },
+        { date: '2024-01-07', avgMoodScore: 7.8, recordCount: 55 }
+      ],
+      // 咨询会话统计
+      consultationStats: {
+        totalSessions: 200,
+        avgDurationMinutes: 35,
+        dailyTrend: [
+          { date: '2024-01-01', sessionCount: 10, userCount: 8 },
+          { date: '2024-01-02', sessionCount: 15, userCount: 12 },
+          { date: '2024-01-03', sessionCount: 12, userCount: 10 },
+          { date: '2024-01-04', sessionCount: 18, userCount: 15 },
+          { date: '2024-01-05', sessionCount: 20, userCount: 16 },
+          { date: '2024-01-06', sessionCount: 16, userCount: 13 },
+          { date: '2024-01-07', sessionCount: 22, userCount: 18 }
+        ]
+      },
+      // 用户活跃度趋势
+      userActivity: [
+        { date: '2024-01-01', activeUsers: 120, newUsers: 15, diaryUsers: 80, consultationUsers: 40 },
+        { date: '2024-01-02', activeUsers: 135, newUsers: 18, diaryUsers: 90, consultationUsers: 45 },
+        { date: '2024-01-03', activeUsers: 128, newUsers: 12, diaryUsers: 85, consultationUsers: 42 },
+        { date: '2024-01-04', activeUsers: 145, newUsers: 20, diaryUsers: 95, consultationUsers: 50 },
+        { date: '2024-01-05', activeUsers: 155, newUsers: 22, diaryUsers: 100, consultationUsers: 55 },
+        { date: '2024-01-06', activeUsers: 148, newUsers: 16, diaryUsers: 92, consultationUsers: 48 },
+        { date: '2024-01-07', activeUsers: 160, newUsers: 25, diaryUsers: 105, consultationUsers: 60 }
+      ]
+    },
+    msg: '获取成功'
+  }
+}
+
+// 模拟 API 响应
+const mockResponse = (url, method, data) => {
+  // 处理AI咨询流式回复
+  if (url === '/psychological-chat/stream') {
+    // 模拟流式回复数据
+    const responses = [
+      '我理解你的感受，',
+      '压力是现代生活中常见的问题。',
+      '能具体说说是什么让你感到压力吗？',
+      '这样我可以更好地帮助你。'
+    ]
+    
+    // 构建事件流数据
+    let eventStream = ''
+    responses.forEach((chunk, index) => {
+      eventStream += `data: ${JSON.stringify({ code: '200', data: { content: chunk } })}\n\n`
+    })
+    // 结束事件
+    eventStream += `event: done\ndata: {"code": "200"}\n\n`
+    
+    // 返回模拟的流数据
+    return eventStream
+  }
+
+  // 处理动态路径
+  const dynamicPathPatterns = [
+    { pattern: /^\/knowledge\/article\/(\d+)$/, key: '/knowledge/article/1' },
+    { pattern: /^\/knowledge\/article\/(\d+)\/status$/, key: '/knowledge/article/1/status' },
+    { pattern: /^\/psychological-chat\/sessions\/(\d+)\/messages$/, key: '/psychological-chat/sessions/1/messages' },
+    { pattern: /^\/psychological-chat\/session\/(\d+)\/emotion$/, key: '/psychological-chat/session/1/emotion' },
+    { pattern: /^\/psychological-chat\/sessions\/(\d+)$/, key: '/psychological-chat/sessions/1' },
+    { pattern: /^\/emotion-diary\/admin\/(\d+)$/, key: '/emotion-diary/admin/1' }
+  ]
+
+  // 查找匹配的动态路径
+  for (const { pattern, key } of dynamicPathPatterns) {
+    const match = url.match(pattern)
+    if (match) {
+      // 对于文章详情，尝试返回对应ID的文章
+      if (key === '/knowledge/article/1') {
+        const articleId = match[1]
+        const articleKey = `/knowledge/article/${articleId}`
+        if (mockData[articleKey]) {
+          return mockData[articleKey]
+        }
+      }
+      return mockData[key]
+    }
+  }
+
+  // 查找静态路径
+  if (mockData[url]) {
+    if (typeof mockData[url] === 'function') {
+      return mockData[url](data)
+    }
+    return mockData[url]
+  }
+
+  // 默认响应
+  return {
+    code: '404',
+    data: null,
+    msg: '接口不存在'
+  }
+}
+
+export default mockResponse

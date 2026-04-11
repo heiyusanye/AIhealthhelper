@@ -80,8 +80,15 @@ const formatContent = (content) => {
 }
 onMounted(() => {
     const id = props.id
+    if (!id) {
+        ElMessage.error('文章ID不能为空')
+        return
+    }
     getKnowledgeDetail(id).then(res => {
         articleDetail.value = res
+    }).catch(error => {
+        console.error('获取文章详情失败:', error)
+        ElMessage.error('获取文章详情失败')
     })
 })
 </script>

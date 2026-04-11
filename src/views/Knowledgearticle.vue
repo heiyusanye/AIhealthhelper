@@ -121,13 +121,27 @@ const categoryList = ref([])
 const tableData = ref([])
 onMounted(async () => {
     const data = await categoryTree()
-    categoryList.value = data.map(item => {
-        categoryOptions[item.id] = item.categoryName
-        return {
-            label: item.categoryName,
-            value: item.id
-        }
-    })
+    const flattenCategories = []
+    
+    // 递归处理所有分类，包括子分类
+    const processCategories = (categories) => {
+        categories.forEach(item => {
+            // 添加当前分类
+            categoryOptions[item.id] = item.categoryName
+            flattenCategories.push({
+                label: item.categoryName,
+                value: item.id
+            })
+            
+            // 处理子分类
+            if (item.children && item.children.length > 0) {
+                processCategories(item.children)
+            }
+        })
+    }
+    
+    processCategories(data)
+    categoryList.value = flattenCategories
     formItem[1].options = categoryList.value
     handleSearch({})
 })
