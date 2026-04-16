@@ -1,0 +1,29 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4facfe"></stop>
+      <stop offset="100%" stop-color="#00f2fe"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- 外圆 -->
+  <circle cx="60" cy="60" r="50" fill="url(#grad)" opacity="0.15"></circle>
+
+  <!-- 脑轮廓 -->
+  <path d="M45 40 
+           C30 40, 30 60, 45 60 
+           C35 60, 35 80, 50 80 
+           C55 90, 70 90, 75 80 
+           C90 80, 90 60, 75 60 
+           C90 60, 90 40, 75 40 
+           C70 30, 55 30, 50 40 Z" fill="none" stroke="url(#grad)" stroke-width="3"></path>
+
+  <!-- AI芯片 -->
+  <rect x="50" y="50" width="20" height="20" rx="4" fill="url(#grad)"></rect>
+
+  <!-- 连接线 -->
+  <line x1="60" y1="50" x2="60" y2="40" stroke="url(#grad)" stroke-width="2"></line>
+  <line x1="60" y1="70" x2="60" y2="80" stroke="url(#grad)" stroke-width="2"></line>
+  <line x1="50" y1="60" x2="40" y2="60" stroke="url(#grad)" stroke-width="2"></line>
+  <line x1="70" y1="60" x2="80" y2="60" stroke="url(#grad)" stroke-width="2"></line>
+</svg>
